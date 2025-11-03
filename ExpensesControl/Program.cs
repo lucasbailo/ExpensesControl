@@ -2,6 +2,7 @@ using ExpensesControl.Application.Interfaces;
 using ExpensesControl.Application.Services;
 using ExpensesControl.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "Expenses Control API";
+        options.Theme = ScalarTheme.Default;
+    });
 }
 
 app.UseHttpsRedirection();
