@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ExpensesControl.Application.DTOs;
+using ExpensesControl.Domain.Entities;
 
 namespace ExpensesControl.Application.Interfaces
 {
-    internal class IExpenseService
+    public interface IExpenseService
     {
+        Task<IEnumerable<Expense>> GetAllByUserAsync(Guid userId);
+        Task<Expense> CreateAsync(Guid userId, ExpenseCreateDto dto);
+        Task<Expense?> UpdateAsync(Guid userId, ExpenseUpdateDto dto);
+        Task<bool> DeleteAsync(Guid userId, Guid expenseId);
     }
 }
