@@ -1,5 +1,6 @@
 ﻿using ExpensesControl.Application.DTOs;
 using ExpensesControl.Application.Interfaces;
+using ExpensesControl.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpensesControl.Controllers
@@ -34,16 +35,19 @@ namespace ExpensesControl.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto dto, [FromServices] TokenService tokenService)
         {
             var user = await _userService.LoginAsync(dto);
 
             if (user == null)
                 return Unauthorized(new { message = "E-mail ou senha inválidos." });
 
+            var token = tokenService.GenerateToken(user);
+
             return Ok(new
             {
                 message = "Login realizado com sucesso!",
+                token,
                 user = new { user.Id, user.Name, user.Email }
             });
         }
