@@ -47,8 +47,8 @@ namespace ExpensesControl.Controllers
             return Ok(expense);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] ExpenseUpdateDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] ExpenseUpdateDto dto)
         {
             var userId = GetUserId();
             var expense = await _expenseService.UpdateAsync(userId, dto);
