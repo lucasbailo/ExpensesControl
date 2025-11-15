@@ -1,12 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ExpensesControl.Application.Interfaces;
+using ExpensesControl.Application.DTOs;
 
-namespace ExpensesControl.Application.Services
+public class DashboardService : IDashboardService
 {
-    internal class DashBoardService
+    private readonly IExpenseService _expenseService;
+
+    public DashboardService(IExpenseService expenseService)
     {
+        _expenseService = expenseService;
+    }
+
+    public async Task<ExpenseDashboardDto> GetDashboardAsync(Guid userId)
+    {
+        var expenses = await _expenseService.GetAllByUserAsync(userId);
+
+        return new ExpenseDashboardDto
+        {
+            TotalByType = expenses
+                .GroupBy(e => e.Type)
+                .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount)),
+
+            MonthlyTotals = expenses
+                .GroupBy(e => e.Date.ToString("yyyy-MM"))
+                .OrderBy(g => g.Key)
+                .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount))
+        };
     }
 }

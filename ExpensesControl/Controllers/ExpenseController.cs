@@ -14,9 +14,14 @@ namespace ExpensesControl.Controllers
     {
         private readonly IExpenseService _expenseService;
 
-        public ExpenseController(IExpenseService expenseService)
+        private readonly IDashboardService _dashboardService;
+
+        public ExpenseController(
+            IExpenseService expenseService,
+            IDashboardService dashboardService)
         {
             _expenseService = expenseService;
+            _dashboardService = dashboardService;
         }
 
         // 🔹 Recupera o ID do usuário logado a partir do token
@@ -65,6 +70,14 @@ namespace ExpensesControl.Controllers
             if (!deleted)
                 return NotFound(new { message = "Despesa não encontrada." });
             return NoContent();
+        }
+
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboard()
+        {
+            var userId = GetUserId();
+            var dashboard = await _dashboardService.GetDashboardAsync(userId);
+            return Ok(dashboard);
         }
     }
 }
