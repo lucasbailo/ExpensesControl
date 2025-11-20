@@ -4,20 +4,21 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copia os projetos individualmente
-COPY ExpensesControl.API/*.csproj ExpensesControl.API/
-COPY ExpensesControl.Domain/*.csproj ExpensesControl.Domain/
+# Copia projetos com base na estrutura REAL do seu repo
+COPY ExpensesControl/*.csproj ExpensesControl/
 COPY ExpensesControl.Application/*.csproj ExpensesControl.Application/
+COPY ExpensesControl.Domain/*.csproj ExpensesControl.Domain/
 COPY ExpensesControl.Infrastructure/*.csproj ExpensesControl.Infrastructure/
 
-COPY ExpensesControl.sln ./
+COPY ExpensesControl.sln .
 
 RUN dotnet restore
 
-# Copia tudo
+# Copia todo o repositório
 COPY . .
 
-RUN dotnet publish ExpensesControl.API/ExpensesControl.API.csproj -c Release -o /out
+# Publica somente o projeto da API (ExpensesControl)
+RUN dotnet publish ExpensesControl/ExpensesControl.csproj -c Release -o /out
 
 # ===========================================
 # RUNTIME STAGE
@@ -27,7 +28,7 @@ WORKDIR /app
 
 COPY --from=build /out .
 
-ENV ASPNETCORE_URLS=http://0.0.0.0:10000
-EXPOSE 10000
+# Render define a porta automaticamente via variável PORT
+ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 
-ENTRYPOINT ["dotnet", "ExpensesControl.API.dll"]
+ENTRYPOINT ["dotnet", "ExpensesControl.dll"]
