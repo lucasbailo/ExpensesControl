@@ -20,7 +20,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:5173",
-            "https://localhost:5173"
+            "https://localhost:5173",
+            "https://expensescontrol.onrender.com"
         )
               .AllowAnyHeader()
               .AllowAnyMethod()
@@ -29,6 +30,13 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        o => o.EnableRetryOnFailure()
+    )
+);
 
 builder.Services.AddOpenApi(options =>
 {
@@ -87,7 +95,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true;
+    options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
