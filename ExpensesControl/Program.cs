@@ -21,7 +21,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
             "http://localhost:5173",
             "https://localhost:5173",
-            "https://expensescontrol.onrender.com"
+            "https://expensescontrol.onrender.com",
+            "https://front-expenses-control.vercel.app"
         )
               .AllowAnyHeader()
               .AllowAnyMethod()
