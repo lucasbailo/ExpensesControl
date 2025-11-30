@@ -1,4 +1,4 @@
-# EXPENSESCONTROL
+# Expenses Control
 
 **Transform Spending Into Smarter Financial Success**
 
